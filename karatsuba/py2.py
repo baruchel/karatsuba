@@ -77,9 +77,10 @@ def make_plan(l1, l2, plan=None, raw=False, stats = {}):
         for c in t.children: _parse_tree(c, parse)
     # Main function
     try:
-        l1, l2 = [int(x) for x in l1], [int(x) for x in l2]
+        l1 = [None if x==None else int(x) for x in l1]
+        l2 = [None if x==None else int(x) for x in l2]
     except:
-        raise TypeError("Arguments should be lists of integer")
+        raise TypeError
     n1, n2 = len(l1), len(l2)
     if n1 != n2:
         raise ValueError("Input lists have different lengths")
