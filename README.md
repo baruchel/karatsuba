@@ -17,7 +17,13 @@ Since the module builds plans, some additional features are provided in order to
 
 The module is compatible with all versions of Python (Python2, Python3, Pypy2, Pypy3).
 
-TODO
+Just type:
+
+    pip install karatsuba
+
+or (for a system-wide installation):
+
+    sudo pip install karatsuba
 
 ## Usage
 
