@@ -58,7 +58,7 @@ If the user wants to study (or tune) the returned function instead of using it, 
 
 ## Performance
 
-Some tests are provided below. For several kinds of lists, a simple plan (corresponding to the same behaviour than `numpy.convolve`) is built; then the plan is applied repeatedly (by convolving the sequence with itself) a great number of time. The same convolution is performed with `numpy.convolve` and with the following piece of code.
+Some tests are provided below. For several kinds of lists, a simple plan (corresponding to the very same behaviour than `numpy.convolve`) is built; then the plan is applied repeatedly (by convolving the sequence with itself) a great number of time. The same convolution is performed with `numpy.convolve` and with the following piece of code.
 
     def convolution(l1, l2):
         N = len(l1)-1
@@ -67,4 +67,152 @@ Some tests are provided below. For several kinds of lists, a simple plan (corres
             l.append(sum( l1[i]*l2[k-i] for i in range(max(0, k-N), min(k+1, N+1))))
         return l
 
-The whole computation was performed with Python 3; results are:
+The whole computation was performed with both Python 2 and Python 3; results are:
+
+#### Python2
+
+    [mpmath.mpf(x) for x in range(1,17)]
+      --> 0.99 (Karatsuba vs Numpy)
+      --> 0.77 (Karatsuba vs Classic)
+
+    [mpmath.mp.mpq(1,x) for x in range(1,17)]
+      --> 1.06 (Karatsuba vs Numpy)
+      --> 0.80 (Karatsuba vs Classic)
+
+    [fractions.Fraction(1,x) for x in range(1,17)]
+      --> 0.98 (Karatsuba vs Numpy)
+      --> 0.84 (Karatsuba vs Classic)
+
+    [sympy.Rational(1,x) for x in range(1,17)]
+      --> 0.94 (Karatsuba vs Numpy)
+      --> 0.81 (Karatsuba vs Classic)
+
+    [sympy.Integer(x) for x in range(1,17)]
+      --> 1.06 (Karatsuba vs Numpy)
+      --> 0.81 (Karatsuba vs Classic)
+
+    [sympy.Integer(x)**x for x in range(1,17)]
+      --> 1.04 (Karatsuba vs Numpy)
+      --> 0.78 (Karatsuba vs Classic)
+
+    [mpmath.mpf(x) for x in range(1,33)]
+      --> 0.78 (Karatsuba vs Numpy)
+      --> 0.65 (Karatsuba vs Classic)
+
+    [mpmath.mp.mpq(1,x) for x in range(1,33)]
+      --> 1.08 (Karatsuba vs Numpy)
+      --> 0.89 (Karatsuba vs Classic)
+
+    [fractions.Fraction(1,x) for x in range(1,33)]
+      --> 0.84 (Karatsuba vs Numpy)
+      --> 0.76 (Karatsuba vs Classic)
+
+    [sympy.Rational(1,x) for x in range(1,33)]
+      --> 0.88 (Karatsuba vs Numpy)
+      --> 0.86 (Karatsuba vs Classic)
+
+    [sympy.Integer(x) for x in range(1,33)]
+      --> 0.82 (Karatsuba vs Numpy)
+      --> 0.69 (Karatsuba vs Classic)
+
+    [sympy.Integer(x)**x for x in range(1,33)]
+      --> 0.78 (Karatsuba vs Numpy)
+      --> 0.65 (Karatsuba vs Classic)
+
+    [mpmath.mpf(x) for x in range(1,65)]
+      --> 0.58 (Karatsuba vs Numpy)
+      --> 0.51 (Karatsuba vs Classic)
+
+    [mpmath.mp.mpq(1,x) for x in range(1,65)]
+      --> 0.62 (Karatsuba vs Numpy)
+      --> 0.56 (Karatsuba vs Classic)
+
+    [fractions.Fraction(1,x) for x in range(1,65)]
+      --> 0.60 (Karatsuba vs Numpy)
+      --> 0.54 (Karatsuba vs Classic)
+
+    [sympy.Rational(1,x) for x in range(1,65)]
+      --> 0.65 (Karatsuba vs Numpy)
+      --> 0.66 (Karatsuba vs Classic)
+
+    [sympy.Integer(x) for x in range(1,65)]
+      --> 0.65 (Karatsuba vs Numpy)
+      --> 0.55 (Karatsuba vs Classic)
+
+    [sympy.Integer(x)**x for x in range(1,65)]
+      --> 0.61 (Karatsuba vs Numpy)
+      --> 0.53 (Karatsuba vs Classic)
+
+#### Python3
+
+    [mpmath.mpf(x) for x in range(1,17)]
+      --> 1.04 (Karatsuba vs Numpy)
+      --> 0.75 (Karatsuba vs Classic)
+
+    [mpmath.mp.mpq(1,x) for x in range(1,17)]
+      --> 1.12 (Karatsuba vs Numpy)
+      --> 0.85 (Karatsuba vs Classic)
+
+    [fractions.Fraction(1,x) for x in range(1,17)]
+      --> 1.01 (Karatsuba vs Numpy)
+      --> 0.79 (Karatsuba vs Classic)
+
+    [sympy.Rational(1,x) for x in range(1,17)]
+      --> 1.11 (Karatsuba vs Numpy)
+      --> 0.70 (Karatsuba vs Classic)
+
+    [sympy.Integer(x) for x in range(1,17)]
+      --> 1.09 (Karatsuba vs Numpy)
+      --> 0.81 (Karatsuba vs Classic)
+
+    [sympy.Integer(x)**x for x in range(1,17)]
+      --> 1.05 (Karatsuba vs Numpy)
+      --> 0.77 (Karatsuba vs Classic)
+
+    [mpmath.mpf(x) for x in range(1,33)]
+      --> 0.84 (Karatsuba vs Numpy)
+      --> 0.65 (Karatsuba vs Classic)
+
+    [mpmath.mp.mpq(1,x) for x in range(1,33)]
+      --> 0.91 (Karatsuba vs Numpy)
+      --> 0.77 (Karatsuba vs Classic)
+
+    [fractions.Fraction(1,x) for x in range(1,33)]
+      --> 0.84 (Karatsuba vs Numpy)
+      --> 0.70 (Karatsuba vs Classic)
+
+    [sympy.Rational(1,x) for x in range(1,33)]
+      --> 0.89 (Karatsuba vs Numpy)
+      --> 0.83 (Karatsuba vs Classic)
+
+    [sympy.Integer(x) for x in range(1,33)]
+      --> 0.85 (Karatsuba vs Numpy)
+      --> 0.69 (Karatsuba vs Classic)
+
+    [sympy.Integer(x)**x for x in range(1,33)]
+      --> 0.82 (Karatsuba vs Numpy)
+      --> 0.64 (Karatsuba vs Classic)
+
+    [mpmath.mpf(x) for x in range(1,65)]
+      --> 0.61 (Karatsuba vs Numpy)
+      --> 0.52 (Karatsuba vs Classic)
+
+    [mpmath.mp.mpq(1,x) for x in range(1,65)]
+      --> 0.66 (Karatsuba vs Numpy)
+      --> 0.60 (Karatsuba vs Classic)
+
+    [fractions.Fraction(1,x) for x in range(1,65)]
+      --> 0.65 (Karatsuba vs Numpy)
+      --> 0.58 (Karatsuba vs Classic)
+
+    [sympy.Rational(1,x) for x in range(1,65)]
+      --> 0.69 (Karatsuba vs Numpy)
+      --> 0.65 (Karatsuba vs Classic)
+
+    [sympy.Integer(x) for x in range(1,65)]
+      --> 0.64 (Karatsuba vs Numpy)
+      --> 0.57 (Karatsuba vs Classic)
+
+    [sympy.Integer(x)**x for x in range(1,65)]
+      --> 0.65 (Karatsuba vs Numpy)
+      --> 0.53 (Karatsuba vs Classic)
