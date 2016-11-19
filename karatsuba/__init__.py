@@ -3,7 +3,7 @@ A module for computing fast convolutions with Python types by precomputing
 Karatsuba's algorithm for a given case.
 """
 
-__version__ = '0.1.1'
+__version__ = '0.1.3'
 
 import sys
 
@@ -68,6 +68,8 @@ def make_plan(l1, l2, plan=None, raw=False, stats = None):
             self.content = None
             self.op = op
             self.top = None
+        def __hash__(self): return id(self)
+        def __eq__(self, arg): return id(self) == id(arg)
     def _add(l1, l2):
         r = []
         for a, b in zip(l1, l2):
@@ -125,8 +127,7 @@ def make_plan(l1, l2, plan=None, raw=False, stats = None):
         return Y[:m] + _add( Y[m:] + X[:m], T) + X[m:]
     def _parse_tree(t, parse):
         if (t.op != "origin" or t.top != None) and not t.is_zero:
-            if id(t) not in map(id, parse):
-                parse.append(t)
+            parse.append(t)
         for c in t.children: _parse_tree(c, parse)
     # Main function
     try:
@@ -168,12 +169,15 @@ def make_plan(l1, l2, plan=None, raw=False, stats = None):
             a.is_zero = True
             a.content = "0"
             y.append(a)
+    # Parse tree
     n, parse = 0, []
     for i, k in enumerate(_karatsuba(x, y)):
         if plan[i]:
             k.top = n
             _parse_tree(k, parse)
             n += 1
+    parse = list(set(parse))
+    # Compile tree
     n, out = 0, []
     stats = {} if stats == None else stats
     stats['mul'], stats['add'], stats['sub'], stats['neg'] = 0, 0, 0, 0

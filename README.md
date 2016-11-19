@@ -58,7 +58,7 @@ If the user wants to study (or tune) the returned function instead of using it, 
 
 ## Performance
 
-Some tests are provided below. For several kinds of lists, a simple plan (corresponding to the same behaviour than `numpy.convolve`) is built; then the plan is applied repeatedly (by convolving the sequence with itself) a greta number of time. The same convolution is performed with `numpy.convolve` and with the following piece of code.
+Some tests are provided below. For several kinds of lists, a simple plan (corresponding to the same behaviour than `numpy.convolve`) is built; then the plan is applied repeatedly (by convolving the sequence with itself) a great number of time. The same convolution is performed with `numpy.convolve` and with the following piece of code.
 
     def convolution(l1, l2):
         N = len(l1)-1
