@@ -3,7 +3,7 @@ A module for computing fast convolutions with Python types by precomputing
 Karatsuba's algorithm for a given case.
 """
 
-__version__ = '0.1'
+__version__ = '0.1.1'
 
 import sys
 
@@ -124,9 +124,9 @@ def make_plan(l1, l2, plan=None, raw=False, stats = None):
         T = _sub(_add(X, Y), Z)
         return Y[:m] + _add( Y[m:] + X[:m], T) + X[m:]
     def _parse_tree(t, parse):
-        if ((t.op != "origin" or t.top != None)
-            and t not in parse and not t.is_zero):
-            parse.append(t)
+        if (t.op != "origin" or t.top != None) and not t.is_zero:
+            if id(t) not in map(id, parse):
+                parse.append(t)
         for c in t.children: _parse_tree(c, parse)
     # Main function
     try:

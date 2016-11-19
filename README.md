@@ -1,7 +1,7 @@
 # karatsuba
 Fast convolution algorithms with Python types
 
-A module for performing repeated convolutions involving high-level Python objects (which includes large integers, rationals, SymPy terms, Sage objects, etc.). By relying on Karatsuba's algorithm, the functions are faster than available ones for such purpose.
+A module for performing repeated convolutions involving high-level Python objects (which includes large integers, rationals, SymPy terms, Sage objects, etc.). By relying on Karatsuba's algorithm, the function is faster than available ones for such purpose. When working with sequences of 32 terms (or more), the current module gets even significantly faster than the well-known `numpy.convolve` function (as long as high-level Python objects are involved rather than CPU types).
 
 ## Background
 
@@ -44,3 +44,27 @@ The previous plan will return 32 terms, but it is well known that the last term 
     k = make_plan(range(16), range(16), plan=[True]*31+[False])
 
 which will avoid (later) the need of removing the last term if this is required.
+
+The rule for customizing the output is very easy: each boolean value in the `plan` optional argument tells if the coefficient of the corresponding degree is wanted or not (of course, disabling a coefficient will both shorten the output list and discard some useless computation).
+
+Sometimes, an algorithm may require extracting the input coefficients from another list; but this may have some computational cost. If this has to be performed repeatedly, it is better to tune the plan: the two initial arguments map any index to the given degree. Thus `[3,2,1,0]` (instead of `range(4)`) tells that the four coefficients should be read in reverse order. Another meaningful example could be: `[4,5,6,7]` in order to use four terms _starting from the index 4 in the input list_. Since two lists are involved, two different mappings may be provided.
+
+If the sequences to be convolved have a size which is not a power of two, the expected result may be achieved by replacing unexisting indices with `None`; for instance for two sequences of 7 terms:
+
+    k = make_plan([0,1,2,3,4,5,6,None], [0,1,2,3,4,5,6,None], [True]*13+[False]*3) 
+
+If the user wants to study (or tune) the returned function instead of using it, the `raw` option can be set to `True`; in this case, the plan will not be returned as a function but as a string (containing Python materials).
+    
+
+## Performance
+
+Some tests are provided below. For several kinds of lists, a simple plan (corresponding to the same behaviour than `numpy.convolve`) is built; then the plan is applied repeatedly (by convolving the sequence with itself) a greta number of time. The same convolution is performed with `numpy.convolve` and with the following piece of code.
+
+    def convolution(l1, l2):
+        N = len(l1)-1
+        l = []
+        for k in range(2*N+1):
+            l.append(sum( l1[i]*l2[k-i] for i in range(max(0, k-N), min(k+1, N+1))))
+        return l
+
+The whole computation was performed with Python 3; results are:
