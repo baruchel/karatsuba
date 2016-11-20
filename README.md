@@ -59,7 +59,7 @@ Another function `make_reciprocal_plan` allows to compute the reciprocal of a po
 
     k = make_reciprocal_plan(range(8))
 
-returning a function of a single argument (a list of the same size).
+returning a function of a single argument (a list of the same size). It should be faster than naive recursive formula when the size is great enough.
 
 ## Performance
 
