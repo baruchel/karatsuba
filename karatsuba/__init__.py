@@ -257,7 +257,7 @@ def make_reciprocal_plan(s):
             for i in range(n):
                 S += s1[i](r,r)
                 for j, k in enumerate(s2[i](r,r)):
-                    S[2**i + j] += 2*k
+                    S[(1<<i) + j] += 2*k
                 r += p[i](S, l)
             return r
     else:
@@ -269,7 +269,7 @@ def make_reciprocal_plan(s):
             for i in range(n):
                 S += s1[i](r,r)
                 for j, k in enumerate(s2[i](r,r)):
-                    S[2**i + j] += 2*k
+                    S[(1<<i) + j] += 2*k
                 r += p[i](S, l)
             return r
     return reciprocal
