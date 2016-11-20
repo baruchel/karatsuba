@@ -3,7 +3,7 @@ A module for computing fast convolutions with Python types by precomputing
 Karatsuba's algorithm for a given case.
 """
 
-__version__ = '0.2'
+__version__ = '0.2.1'
 
 import sys
 
@@ -253,7 +253,7 @@ def make_reciprocal_plan(s):
         def reciprocal(l):
             r = [1/l[z], 0]
             l = [ -x for x in l ]
-            S = [ r[0]**2, 0 ]
+            S = [ r[0]*r[0], 0 ]
             for i in range(n):
                 S += s1[i](r,r)
                 for j, k in enumerate(s2[i](r,r)):
@@ -264,7 +264,7 @@ def make_reciprocal_plan(s):
         def reciprocal(l):
             r = [1/l[z]]
             l = [ -x for x in l ]
-            S = [ r[0]**2, 0 ]
+            S = [ r[0]*r[0], 0 ]
             r.append( S[0]*l[w] )
             for i in range(n):
                 S += s1[i](r,r)
