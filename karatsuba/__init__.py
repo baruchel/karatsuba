@@ -225,10 +225,16 @@ def make_plan(l1, l2, plan=None, raw=False, stats = None):
 def make_reciprocal_plan(s):
     """
     TODO
-    preciser len(s) >= 2
     """
-    s = list(s)
-    n = len(s)
+    try:
+        s = [None if x==None else int(x) for x in s]
+    except:
+        raise TypeError
+    if s[0] == None:
+        raise ValueError("Initial coefficient should not be None")
+    n, z = len(s), s[0]
+    if n == 1:
+        return lambda l: [ 1/l[z] ]
     if n ^ (1<<(n).bit_length()>>1) != 0:
         raise ValueError("Length of input list should be a power of 2")
     n = n.bit_length() - 1
@@ -242,19 +248,30 @@ def make_reciprocal_plan(s):
                             + [False]*(2**i) )
             for i in range(2, n+1) ]
     n -= 1
-    z, w = s[0], s[1]
-    def reciprocal(l):
-        r = [1/l[z]]
-        l = [ -x for x in l ]
-        S = [ r[0]**2, 0 ]
-        #r += p[0](S, l)
-        r.append( S[0]*l[w] )
-        for i in range(n):
-            S += s1[i](r,r)
-            for j, k in enumerate(s2[i](r,r)):
-                S[2**i + j] += 2*k
-            r += p[i](S, l)
-        return r
+    w = s[1]
+    if w == None:
+        def reciprocal(l):
+            r = [1/l[z], 0]
+            l = [ -x for x in l ]
+            S = [ r[0]**2, 0 ]
+            for i in range(n):
+                S += s1[i](r,r)
+                for j, k in enumerate(s2[i](r,r)):
+                    S[2**i + j] += 2*k
+                r += p[i](S, l)
+            return r
+    else:
+        def reciprocal(l):
+            r = [1/l[z]]
+            l = [ -x for x in l ]
+            S = [ r[0]**2, 0 ]
+            r.append( S[0]*l[w] )
+            for i in range(n):
+                S += s1[i](r,r)
+                for j, k in enumerate(s2[i](r,r)):
+                    S[2**i + j] += 2*k
+                r += p[i](S, l)
+            return r
     return reciprocal
 
 def test(l):
