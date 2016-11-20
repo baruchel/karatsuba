@@ -222,4 +222,45 @@ def make_plan(l1, l2, plan=None, raw=False, stats = None):
     if raw: return (d%"convolution")
     return compile_plan("convolution", d)
 
-__all__ = ['make_plan']
+def make_reciprocal_plan(s):
+    """
+    TODO
+    preciser len(s) >= 2
+    """
+    s = list(s)
+    n = len(s)
+    if n ^ (1<<(n).bit_length()>>1) != 0:
+        raise ValueError("Length of input list should be a power of 2")
+    n = n.bit_length() - 1
+    s1 = [ make_plan( range(2**i, 2**(i+1)), range(2**i, 2**(i+1)))
+             for i in range(n-1) ]
+    s2 = [ make_plan( range(2**i), range(2**i, 2**(i+1)))
+             for i in range(n-1) ]
+    p = [ make_plan( range(2**i), s[:2**i],
+                     plan = [False]*(2**(i-1))
+                            + [True]*(2**(i-1))
+                            + [False]*(2**i) )
+            for i in range(2, n+1) ]
+    n -= 1
+    z, w = s[0], s[1]
+    def reciprocal(l):
+        r = [1/l[z]]
+        l = [ -x for x in l ]
+        S = [ r[0]**2, 0 ]
+        #r += p[0](S, l)
+        r.append( S[0]*l[w] )
+        for i in range(n):
+            S += s1[i](r,r)
+            for j, k in enumerate(s2[i](r,r)):
+                S[2**i + j] += 2*k
+            r += p[i](S, l)
+        return r
+    return reciprocal
+
+def test(l):
+    m = [1/l[0]]
+    for k in range(1, len(l)):
+        m.append(-sum(l[j+1]*m[-j-1] for j in range(k))*m[0])
+    return m
+
+__all__ = ['make_plan', 'make_reciprocal_plan']
