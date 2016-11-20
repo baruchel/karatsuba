@@ -54,7 +54,12 @@ If the sequences to be convolved have a size which is not a power of two, the ex
     k = make_plan([0,1,2,3,4,5,6,None], [0,1,2,3,4,5,6,None], [True]*13+[False]*3) 
 
 If the user wants to study (or tune) the returned function instead of using it, the `raw` option can be set to `True`; in this case, the plan will not be returned as a function but as a string (containing Python materials).
-    
+
+Another function `make_reciprocal_plan` allows to compute the reciprocal of a power series by embedding plans (from the previous function); its argument is a list (whose length is a power of 2). For instance:
+
+    k = make_reciprocal_plan(range(8))
+
+returning a function of a single argument (a list of the same size).
 
 ## Performance
 
