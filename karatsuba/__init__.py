@@ -3,7 +3,7 @@ A module for computing fast convolutions with Python types by precomputing
 Karatsuba's algorithm for a given case.
 """
 
-__version__ = '0.1.3'
+__version__ = '0.2'
 
 import sys
 
